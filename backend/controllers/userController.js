@@ -1,6 +1,6 @@
 import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 import validator from "validator";
 
 //login user
@@ -13,7 +13,7 @@ const loginUser = async (req, res) => {
       return res.json({ success: false, message: "User Doesn't exist" });
     }
 
-    const isMatch = await bcrypt.compare(password,user.password);
+    const isMatch = await bcryptjs.compare(password,user.password);
 
     if (!isMatch) {
       return res.json({ success: false, message: "Invalid credentials" });
@@ -30,8 +30,10 @@ const loginUser = async (req, res) => {
 };
 
 const createToken = (id) => {
+  console.log("JWT_SECRET:", process.env.JWT_SECRET); // Dòng kiểm tra
   return jwt.sign({ id }, process.env.JWT_SECRET);
 };
+
 
 //register user
 
@@ -60,8 +62,8 @@ const registerUser = async (req, res) => {
 
     //hashing user password
 
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const salt = await bcryptjs.genSalt();
+    const hashedPassword = await bcryptjs.hash(password, salt);
 
     const newUser = new userModel({
       name: name,

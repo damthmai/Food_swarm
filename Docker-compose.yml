@@ -1,0 +1,39 @@
+version: '3'
+services: 
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      # Sửa lại MONGO_URI: bỏ "http://" và chỉ giữ "host.docker.internal"
+      - MONGO_URI=mongodb://mongodb:27017/food-delivery
+      - JWT_SECRET=your-secret-key
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: ["npx", "nodemon", "/app/backend/server.js"]
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5000:80"  # Cổng frontend sẽ chạy trên 5000 của host
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "8088:80"  # Đảm bảo cổng này không bị sử dụng bởi dịch vụ khác
+    depends_on:
+      - backend
+      - frontend
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"  # Expose cổng MongoDB ra ngoài
+    volumes:
+      - ./data/db:/data/db  # Nếu bạn muốn lưu trữ dữ liệu vào thư mục ngoài
+    restart: always

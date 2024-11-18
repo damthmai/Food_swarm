@@ -3,7 +3,9 @@ import cors from "cors"
 import connectDB  from "./config/db.js"
 import foodRouter from "./routes/foodRoute.js"
 import userRouter from "./routes/userRoutes.js"
-import 'dotenv/config.js'
+//import 'dotenv/config.js'
+import dotenv from 'dotenv';
+dotenv.config({ path: './backend/.env' }); // Chỉ định đường dẫn đến file .env
 import cartRouter from "./routes/cartRoute.js"
 import orderRouter from "./routes/orderRoute.js"
 
